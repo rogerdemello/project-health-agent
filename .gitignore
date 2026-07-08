@@ -3,4 +3,5 @@ __pycache__/
 logs/
 *.pyc
 .env
-outputs/*.pptx
+
+# Note: outputs/Monthly_Executive_Review.pptx is a required deliverable and IS committed.
