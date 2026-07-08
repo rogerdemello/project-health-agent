@@ -4,4 +4,15 @@ logs/
 *.pyc
 .env
 
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
 # Note: outputs/Monthly_Executive_Review.pptx is a required deliverable and IS committed.

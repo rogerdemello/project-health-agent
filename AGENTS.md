@@ -6,7 +6,7 @@ You are the senior AI engineer responsible for this repository.
 - Build production-quality code.
 - Never use placeholder implementations.
 - Prefer deterministic business logic over prompting.
-- Use GPT only for reasoning and executive summaries.
+- Use the LLM only for reasoning and executive summaries.
 - Keep files modular (each < 300 lines).
 - Write tests alongside implementation.
 - Keep the project deployable at all times.
