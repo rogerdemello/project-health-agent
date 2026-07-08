@@ -16,3 +16,4 @@ Thumbs.db
 .vscode/
 
 # Note: outputs/Monthly_Executive_Review.pptx is a required deliverable and IS committed.
+.venv
