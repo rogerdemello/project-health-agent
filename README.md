@@ -27,7 +27,7 @@ Built for the Zycus AI Engineer Intern technical assignment.
          │
          ▼
   ┌──────────────┐
-  │  LLM Layer   │  GPT explains the pre-computed scores (reasoning only)
+  │  LLM Layer   │  LLM explains the pre-computed scores (reasoning only)
   └──────┬───────┘
          │
     ┌────┴────┐
@@ -40,7 +40,7 @@ Built for the Zycus AI Engineer Intern technical assignment.
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env   # Add your OPENAI_API_KEY
+cp .env.example .env   # Add your NVIDIA_API_KEY (free tier at build.nvidia.com)
 ```
 
 ### 1. Analyze a single project
@@ -101,11 +101,14 @@ Five weighted dimensions, scored by deterministic business rules (no LLM involve
 
 ## LLM Usage
 
-The LLM (OpenAI GPT) is used **only** for executive reasoning:
+The LLM (NVIDIA NIM — Llama 3.1, via the OpenAI-compatible endpoint) is used
+**only** for executive reasoning:
 
 - **Input**: Structured JSON of pre-computed metrics (never raw Excel)
 - **Output**: Plain-English summary, reasons, and recommendations
 - **Fallback**: If no API key is configured, a rule-based explanation is used
+- **Portable**: OpenAI-compatible, so it also runs against OpenAI directly by
+  setting `OPENAI_API_KEY` instead of `NVIDIA_API_KEY`
 
 This ensures deterministic, auditable scoring combined with natural-language communication.
 
@@ -116,7 +119,7 @@ project-health-agent/
 ├── app/
 │   ├── api.py          FastAPI endpoints
 │   ├── config.py       Environment & column config
-│   ├── llm.py          LLM reasoning (OpenAI)
+│   ├── llm.py          LLM reasoning (NVIDIA NIM / OpenAI-compatible)
 │   ├── models.py       Pydantic v2 data models
 │   ├── parser.py       Excel parser with fuzzy column detection
 │   ├── ppt.py          PowerPoint generator

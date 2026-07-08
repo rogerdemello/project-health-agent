@@ -14,8 +14,28 @@ LOGS_DIR = ROOT / "logs"
 PROMPTS_DIR = ROOT / "prompts"
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+# --- LLM: NVIDIA NIM (OpenAI-compatible endpoint) ---
+# The narration LLM speaks the OpenAI wire format, so we use the `openai` SDK
+# pointed at NVIDIA NIM's base URL. OPENAI_API_KEY is still honored as a fallback
+# so the same code runs against OpenAI directly if preferred.
+NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", "").strip()
+NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+
+LLM_API_KEY = NVIDIA_API_KEY or os.getenv("OPENAI_API_KEY", "").strip()
+# NVIDIA key → use NIM base URL; otherwise fall back to OpenAI's default endpoint.
+LLM_BASE_URL = NVIDIA_BASE_URL if NVIDIA_API_KEY else os.getenv("OPENAI_BASE_URL", "")
+# Default to llama-3.1-8b-instruct on NIM: it stays warm on the serverless free
+# tier and responds in ~1-2s. Larger models (e.g. meta/llama-3.3-70b-instruct)
+# give higher quality but can cold-start for minutes on the free tier — point
+# LLM_MODEL at one if your tier keeps it warm.
+LLM_MODEL = os.getenv(
+    "LLM_MODEL",
+    "meta/llama-3.1-8b-instruct" if NVIDIA_API_KEY else "gpt-4o-mini",
+)
+
+# Backward-compatible aliases (older imports referenced these names).
+OPENAI_API_KEY = LLM_API_KEY
+OPENAI_MODEL = LLM_MODEL
 
 # RAG weights (must sum to 100)
 RAG_WEIGHTS: dict[str, float] = {
