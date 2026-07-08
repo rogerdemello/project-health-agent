@@ -7,7 +7,7 @@ from openai import OpenAI
 from loguru import logger
 
 from app.models import RiskAssessment, LLMExplanation
-from app.config import OPENAI_API_KEY, OPENAI_MODEL
+from app.config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
 
 
 _EXPLANATION_PROMPT = """You are a PMO Executive presenting to client leadership.
@@ -60,16 +60,18 @@ def _build_prompt(assessment: RiskAssessment) -> str:
 
 def explain(assessment: RiskAssessment, client: OpenAI | None = None) -> LLMExplanation:
     """Use LLM to generate executive explanation for a computed assessment."""
-    if not OPENAI_API_KEY:
-        logger.warning("No OPENAI_API_KEY set; returning rule-based explanation.")
+    if not LLM_API_KEY:
+        logger.warning("No LLM API key set (NVIDIA_API_KEY/OPENAI_API_KEY); returning rule-based explanation.")
         return _fallback_explanation(assessment)
 
-    client = client or OpenAI(api_key=OPENAI_API_KEY)
+    if client is None:
+        # NVIDIA NIM is OpenAI-compatible: same SDK, different base_url.
+        client = OpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL or None, timeout=120)
     prompt = _build_prompt(assessment)
 
     try:
         response = client.chat.completions.create(
-            model=OPENAI_MODEL,
+            model=LLM_MODEL,
             messages=[
                 {"role": "system", "content": "You are a PMO Executive. Be concise, professional, and insightful."},
                 {"role": "user", "content": prompt},
